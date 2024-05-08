@@ -1,0 +1,18 @@
+# 应用名称
+spring:
+  application:
+    name: netty-proxy
+# 应用服务 WEB 访问端口
+
+server:
+  port: 9989
+  type: dubboProxyServer
+  serverIp: 192.168.10.30
+  #netty服务网关端口
+  serverPort: 8888
+
+  backendIp: 192.168.10.30
+  backendPort: 20880
+  receiveBuffer: 10240
+  sendBuffer: 10240
+  maxContentLength: 2000000

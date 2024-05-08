@@ -1,0 +1,16 @@
+
+spring:
+  application:
+    name: dubbo-proxy
+
+server:
+  port: 8083
+  serverIp: 10.1.1.2
+  #netty服务网关端口
+  serverPort: 18888
+
+  backendIp: 10.1.1.1
+  backendPort: 80
+  receiveBuffer: 10240
+  sendBuffer: 10240
+  maxContentLength: 2000000
