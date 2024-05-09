@@ -1,4 +1,4 @@
-### dubbo 七层网关
+### dubbo 四层网关
 dubbo 消费者请求统一经过网关，网关根据目标提供者application.name作为虚拟 host 进行转发，以复用同一端口，降低手动管理 dubbo 提供者服务端口的复杂度。
 
 ![架构图](docs/dubboproxy.png)
