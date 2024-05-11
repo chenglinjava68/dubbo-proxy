@@ -7,12 +7,16 @@ spring:
 server:
   port: 9989
   type: dubboProxyServer
-  serverIp: 192.168.10.30
+  serverIp: 192.168.0.103
   #netty服务网关端口
   serverPort: 8888
 
-  backendIp: 192.168.10.30
+  backendIp: 192.168.0.103
   backendPort: 20880
   receiveBuffer: 10240
   sendBuffer: 10240
   maxContentLength: 2000000
+  backend:
+    - name: C
+      ip: 192.168.0.103
+      port: 20880

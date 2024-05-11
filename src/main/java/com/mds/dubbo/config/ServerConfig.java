@@ -4,6 +4,8 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.List;
+
 /**
  * @author cheng
  */
@@ -22,4 +24,6 @@ public class ServerConfig {
     private AllocatorType allocatorType;
     private int maxContentLength;
     private int workThreadNums ;
+
+    private List<AppInfo> backend;
 }

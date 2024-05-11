@@ -9,6 +9,10 @@ public abstract class Body {
         return bodyBytes;
     }
 
+    public void setBodyBytes(ByteBuf bodyBytes) {
+        this.bodyBytes = bodyBytes;
+    }
+
     public boolean release() {
         if (bodyBytes != null && bodyBytes.refCnt() > 0) {
             return bodyBytes.release();
