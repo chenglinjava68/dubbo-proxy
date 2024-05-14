@@ -14,6 +14,7 @@ import org.apache.dubbo.remoting.transport.netty4.NettyEventLoopFactory;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -22,7 +23,6 @@ import java.util.stream.Collectors;
 public class FrontendHandler extends ChannelInboundHandlerAdapter {
 
     private final List<AppInfo> appInfoList;
-    private Channel outboundChannel;
 
     private static final Map<String,Channel> channelMap = new ConcurrentHashMap<>(16);
 
@@ -54,8 +54,7 @@ public class FrontendHandler extends ChannelInboundHandlerAdapter {
                     inboundChannel.close();
                 }
             });
-            outboundChannel = f.channel();
-            channelMap.put(appInfo.getName(),outboundChannel);
+            channelMap.put(appInfo.getName(),f.channel());
         }
     }
 
@@ -68,7 +67,9 @@ public class FrontendHandler extends ChannelInboundHandlerAdapter {
                 Body body = dubboPacket.getBody();
                 if (body instanceof BodyRequest) {
                     BodyRequest bodyRequest = (BodyRequest) body;
-                    if (outboundChannel.isActive()) {
+                    String dubboApplication = bodyRequest.getAttachments().get("target-application").toString();
+                    Channel channel = channelMap.get(dubboApplication);
+                    if (channel.isActive()) {
                         // 获取ByteBufAllocator用于创建新的ByteBuf
                         ByteBufAllocator alloc = ctx.alloc();
 
@@ -83,7 +84,7 @@ public class FrontendHandler extends ChannelInboundHandlerAdapter {
 
                         // 将Body中的ByteBuf内容复制到新的ByteBuf中
                         combinedByteBuf.writeBytes(dubboPacket.getBody().bytes());
-                        outboundChannel.writeAndFlush(combinedByteBuf).addListener((ChannelFutureListener) future -> {
+                        channel.writeAndFlush(combinedByteBuf).addListener((ChannelFutureListener) future -> {
                             if (future.isSuccess()) {
                                 ctx.channel().read();
                             } else {

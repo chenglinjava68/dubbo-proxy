@@ -33,7 +33,7 @@ public abstract class ProxyServer {
             b.group(serverBossGroup, serverWorkerGroup)
                     .channel(NettyEventLoopFactory.serverSocketChannelClass())
                     .childHandler(channelInitializer())
-            	    .handler(new LoggingHandler(LogLevel.INFO));
+            	    .handler(new LoggingHandler(LogLevel.DEBUG));
             b.childOption(ChannelOption.SO_RCVBUF, serverConfig.getReceiveBuffer())
                     .childOption(ChannelOption.SO_SNDBUF, serverConfig.getSendBuffer());
             if (serverConfig.getAllocatorType() == AllocatorType.Pooled) {

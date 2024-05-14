@@ -17,6 +17,9 @@ server:
   sendBuffer: 10240
   maxContentLength: 2000000
   backend:
-    - name: C
+    - name: springboot-user-provider
       ip: 192.168.0.103
       port: 20880
+    - name: springboot-user-provider-one
+      ip: 192.168.0.103
+      port: 20881
