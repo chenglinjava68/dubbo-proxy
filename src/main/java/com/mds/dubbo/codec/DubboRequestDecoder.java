@@ -53,19 +53,15 @@ public class DubboRequestDecoder extends ByteToMessageDecoder {
                     if (buffer.readableBytes() >= this.dubboPacket.getDubboRequestHeader().getBodyLength()) {
                         int markReaderIndex = buffer.readerIndex();
                         try {
-                            this.dubboPacket.setBody(parseBody(buffer));
+                            Body body = parseBody(buffer);
+                            buffer.readerIndex(16);
+                            body.setBodyBytes(buffer.readRetainedSlice(dubboPacket.getDubboRequestHeader().getBodyLength()));
+                            this.dubboPacket.setBody(body);
                         } catch (Exception e) {
                             exception(ctx, buffer, e);
                             this.dubboPacket.release();
                             throw e;
                         }
-                        buffer.readerIndex(markReaderIndex);
-                        this.dubboPacket.setBody(new Body() {
-                            @Override
-                            public ByteBuf bytes() {
-                                return buffer.readRetainedSlice(dubboPacket.getDubboRequestHeader().getBodyLength());
-                            }
-                        });
                         this.state = State.READ_HEADER;
                         out.add(this.dubboPacket);
                         this.dubboPacket = null;
