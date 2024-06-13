@@ -24,6 +24,7 @@ public class DubboProxyServer extends ProxyServer {
             protected void initChannel(Channel ch) {
                 ch.pipeline().addLast("dubbo-decoder",new DubboRequestDecoder());
                 ch.pipeline().addLast("server-idle-handler", new IdleStateHandler(0, 0, 10000, TimeUnit.MILLISECONDS));
+                ch.pipeline().addLast("session-handler", new SessionHandler());
                 ch.pipeline().addLast("frontend-handler",new FrontendHandler(serverConfig.getBackend()));
 
             }
