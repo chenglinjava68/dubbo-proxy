@@ -1,5 +1,6 @@
 package com.mds.dubbo.handler;
 
+import com.mds.dubbo.session.SessionManager;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
@@ -24,13 +25,15 @@ public class BackendHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(final ChannelHandlerContext ctx, Object msg) {
         log.info("BackendHandler channelRead  msg {}",msg);
-        inboundChannel.writeAndFlush(msg).addListener((ChannelFutureListener) future -> {
-            if (future.isSuccess()) {
-                ctx.channel().read();
-            } else {
-                future.channel().close();
-            }
-        });
+        if (inboundChannel != null && inboundChannel.isActive()) {
+            inboundChannel.writeAndFlush(msg).addListener((ChannelFutureListener) future -> {
+                if (future.isSuccess()) {
+                    ctx.channel().read();
+                } else {
+                    future.channel().close();
+                }
+            });
+        }
     }
 
     @Override
