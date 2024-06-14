@@ -22,8 +22,6 @@ public class FrontendHandler extends ChannelInboundHandlerAdapter {
 
     private final List<AppInfo> appInfoList;
 
-    private static final Map<String,Channel> channelMap = new ConcurrentHashMap<>(16);
-
     public FrontendHandler(List<AppInfo> appInfoList) {
         this.appInfoList = appInfoList;
     }
@@ -88,16 +86,13 @@ public class FrontendHandler extends ChannelInboundHandlerAdapter {
                 } else if (body instanceof BodyHeartBeat) {
                     CompositeByteBuf compositeByteBuf = Unpooled.compositeBuffer();
                     compositeByteBuf.addComponent(true, dubboPacket.getDubboRequestHeader().getHeaderBytes());
-                    log.info("心跳包");
-                    SessionManager sessionManager = SessionManager.getInstance();
-                    Channel channel = ctx.channel();
-                    sessionManager.renew(channel);
+                    log.debug("heartbeat:{}", ctx.channel());
                     ctx.writeAndFlush(compositeByteBuf).addListener((ChannelFutureListener) future -> {
                         if (future.isSuccess()) {
-                            log.info("success");
+                            log.debug("write heartbeat success");
                             ctx.channel().read();
                         } else {
-                            log.info("fail");
+                            log.info("write heartbeat fail");
                             future.channel().close();
                         }
                     });;
